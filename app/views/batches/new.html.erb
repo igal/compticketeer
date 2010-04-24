@@ -1,11 +1,5 @@
 <% page_title "New batch" %>
 
-<% form_for(@batch) do |f| %>
-  <%= f.error_messages %>
-
-  <p>
-    <%= f.submit 'Create' %>
-  </p>
-<% end %>
+<%= render "form", :batch => @batch %>
 
 <%= link_to 'Back', batches_path %>

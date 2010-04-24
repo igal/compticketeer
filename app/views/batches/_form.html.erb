@@ -1,0 +1,20 @@
+<% form_for(batch) do |f| %>
+  <%= f.error_messages %>
+
+  Type of ticket to send:
+  <% for kind in TicketKind.ordered %>
+    <%= f.radio_button :ticket_kind_id, kind.id %>
+    <label for="batch_ticket_kind_id_<%= kind.id %>">
+      <%= kind.title %>
+    </label>
+  <% end %>
+
+  <p>
+    Send tickets to these email addresses, one per line:<br />
+    <%= f.text_area :emails, :rows => 5 %>
+  </p>
+
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
