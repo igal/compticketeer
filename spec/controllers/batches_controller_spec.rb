@@ -10,6 +10,44 @@ describe BatchesController do
     @mock_batch ||= mock_model(Batch, stubs)
   end
 
+  describe "authentication" do
+    describe "when enabled" do
+      before :each do
+        @controller.send(:authenticate=, true)
+      end
+
+      it "should allow access given valid credentials" do
+        authenticate_with_http_digest(SECRETS.username, SECRETS.password, SECRETS.realm)
+
+        get :index
+        
+        response.should be_success
+      end
+
+      it "should not allow access given invalid credentials" do
+        authenticate_with_http_digest("invalid_username", "invalid_password", "invalid_realm")
+
+        get :index
+
+        response.code.should == "401"
+      end
+
+      it "should not allow access without credentials" do
+        get :index
+
+        response.code.should == "401"
+      end
+    end
+
+    describe "when disabled" do
+      it "should allow access" do
+        get :index
+
+        response.should be_success
+      end
+    end
+  end
+
   describe "GET index" do
     it "assigns all batches as @batches" do
       Batch.stub(:find).with(:all).and_return([mock_batch])
