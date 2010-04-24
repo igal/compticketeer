@@ -33,14 +33,13 @@ protected
   # Authenticate the user.
   def authenticate
     if authenticate?
-      realm = "Administration"
       users_and_passwords = { SECRETS.username => SECRETS.password }
       users_and_digests = {}
       users_and_passwords.each do |user, password|
-        users_and_digests[user] = Digest::MD5::hexdigest([user, realm, password].join(":"))
+        users_and_digests[user] = Digest::MD5::hexdigest([user, SECRETS.realm, password].join(":"))
       end
 
-      authenticate_or_request_with_http_digest(realm) do |username|
+      authenticate_or_request_with_http_digest(SECRETS.realm) do |username|
         users_and_digests[username] || false
       end
     end
