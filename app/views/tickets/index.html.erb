@@ -1,0 +1,30 @@
+<h1>Listing tickets</h1>
+
+<table>
+  <tr>
+    <th>Ticket kind</th>
+    <th>Batch</th>
+    <th>Email</th>
+    <th>Processed</th>
+    <th>Error</th>
+    <th>Processed at</th>
+  </tr>
+
+<% @tickets.each do |ticket| %>
+  <tr>
+    <td><%=h ticket.ticket_kind_id %></td>
+    <td><%=h ticket.batch_id %></td>
+    <td><%=h ticket.email %></td>
+    <td><%=h ticket.processed %></td>
+    <td><%=h ticket.error %></td>
+    <td><%=h ticket.processed_at %></td>
+    <td><%= link_to 'Show', ticket %></td>
+    <td><%= link_to 'Edit', edit_ticket_path(ticket) %></td>
+    <td><%= link_to 'Destroy', ticket, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New ticket', new_ticket_path %>

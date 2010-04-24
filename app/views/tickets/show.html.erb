@@ -1,0 +1,33 @@
+<p>
+  <b>Ticket kind:</b>
+  <%=h @ticket.ticket_kind_id %>
+</p>
+
+<p>
+  <b>Batch:</b>
+  <%=h @ticket.batch_id %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%=h @ticket.email %>
+</p>
+
+<p>
+  <b>Processed:</b>
+  <%=h @ticket.processed %>
+</p>
+
+<p>
+  <b>Error:</b>
+  <%=h @ticket.error %>
+</p>
+
+<p>
+  <b>Processed at:</b>
+  <%=h @ticket.processed_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_ticket_path(@ticket) %> |
+<%= link_to 'Back', tickets_path %>

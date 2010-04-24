@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  ticket_kind_id: 1
+  batch_id: 1
+  email: MyString
+  processed: false
+  error: MyString
+  processed_at: 2010-04-24 11:12:42
+
+two:
+  ticket_kind_id: 1
+  batch_id: 1
+  email: MyString
+  processed: false
+  error: MyString
+  processed_at: 2010-04-24 11:12:42
