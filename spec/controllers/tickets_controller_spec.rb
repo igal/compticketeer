@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe TicketsController do
 
+  before :each do
+    @controller.send(:authenticate=, false)
+  end
+
   def mock_ticket(stubs={})
     @mock_ticket ||= mock_model(Ticket, stubs)
   end

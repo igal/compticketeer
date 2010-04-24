@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe BatchesController do
 
+  before :each do
+    @controller.send(:authenticate=, false)
+  end
+
   def mock_batch(stubs={})
     @mock_batch ||= mock_model(Batch, stubs)
   end

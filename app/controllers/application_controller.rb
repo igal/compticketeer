@@ -2,9 +2,47 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  helper :all # include all helpers, all the time
-  protect_from_forgery # See ActionController::RequestForgeryProtection for details
+  # Include all helpers, all the time
+  helper :all
+
+  # See ActionController::RequestForgeryProtection for details
+  protect_from_forgery
 
   # Scrub sensitive parameters from your log
-  # filter_parameter_logging :password
+  filter_parameter_logging :password
+
+  # Filters
+  before_filter :authenticate
+
+protected
+
+  # Should the user be authenticated?
+  def authenticate?
+    if defined?(@_authenticate)
+      return @_authenticate
+    else
+      return @_authenticate = true
+    end
+  end
+
+  # Change whether the user should be authenticated.
+  def authenticate=(value)
+    @_authenticate = value
+  end
+
+  # Authenticate the user.
+  def authenticate
+    if authenticate?
+      realm = "Administration"
+      users_and_passwords = { SECRETS.username => SECRETS.password }
+      users_and_digests = {}
+      users_and_passwords.each do |user, password|
+        users_and_digests[user] = Digest::MD5::hexdigest([user, realm, password].join(":"))
+      end
+
+      authenticate_or_request_with_http_digest(realm) do |username|
+        users_and_digests[username] || false
+      end
+    end
+  end
 end
