@@ -1,13 +1,9 @@
 require 'spec_helper'
 
 describe Batch do
-  before(:each) do
-    @valid_attributes = {
-      
-    }
-  end
-
   it "should create a new instance given valid attributes" do
-    Batch.create!(@valid_attributes)
+    kind = Factory(:ticket_kind)
+    attributes = Factory.attributes_for(:batch, :ticket_kind => kind)
+    Batch.create!(attributes)
   end
 end
