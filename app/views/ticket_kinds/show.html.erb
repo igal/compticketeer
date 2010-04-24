@@ -1,0 +1,18 @@
+<p>
+  <b>Title:</b>
+  <%=h @ticket_kind.title %>
+</p>
+
+<p>
+  <b>Prefix:</b>
+  <%=h @ticket_kind.prefix %>
+</p>
+
+<p>
+  <b>Template:</b>
+  <%=h @ticket_kind.template %>
+</p>
+
+
+<%= link_to 'Edit', edit_ticket_kind_path(@ticket_kind) %> |
+<%= link_to 'Back', ticket_kinds_path %>
