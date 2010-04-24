@@ -17,6 +17,7 @@ describe BatchesController do
       end
 
       it "should allow access given valid credentials" do
+        pending "FIXME test only when digest auth is used"
         authenticate_with_http_digest(SECRETS.username, SECRETS.password, SECRETS.realm)
 
         get :index
