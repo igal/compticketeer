@@ -83,32 +83,23 @@ describe BatchesController do
 
   describe "POST create" do
 
-    describe "with valid params" do
-      it "assigns a newly created batch as @batch" do
-        Batch.stub(:new).with({'these' => 'params'}).and_return(mock_batch(:save => true))
-        post :create, :batch => {:these => 'params'}
-        assigns[:batch].should equal(mock_batch)
-      end
+    it "should create a batch when given valid params" do
+      batch = Factory :batch
+      Batch.should_receive(:new).with(batch.attributes).and_return(batch)
+      batch.should_receive(:save).and_return(true)
 
-      it "redirects to the created batch" do
-        Batch.stub(:new).and_return(mock_batch(:save => true))
-        post :create, :batch => {}
-        response.should redirect_to(batch_url(mock_batch))
-      end
+      post :create, :batch => batch.attributes
+
+      response.should redirect_to(batch_path batch)
+      assigns[:batch].should be_valid
     end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved batch as @batch" do
-        Batch.stub(:new).with({'these' => 'params'}).and_return(mock_batch(:save => false))
-        post :create, :batch => {:these => 'params'}
-        assigns[:batch].should equal(mock_batch)
-      end
+    it "should not create a batch when given invalid params"  do
+      attributes = Factory.attributes_for :batch, :ticket_kind => nil
+      post :create, :batch => attributes
 
-      it "re-renders the 'new' template" do
-        Batch.stub(:new).and_return(mock_batch(:save => false))
-        post :create, :batch => {}
-        response.should render_template('new')
-      end
+      response.should be_success
+      assigns[:batch].should_not be_valid
     end
 
   end
