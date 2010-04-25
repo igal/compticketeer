@@ -6,129 +6,100 @@ describe TicketKindsController do
     login_as_admin
   end
 
-  def mock_ticket_kind(stubs={})
-    @mock_ticket_kind ||= mock_model(TicketKind, stubs)
+  def create_record
+    @record = Factory(:ticket_kind)
   end
 
-  describe "GET index" do
-    it "assigns all ticket_kinds as @ticket_kinds" do
-      TicketKind.stub(:find).with(:all).and_return([mock_ticket_kind])
+  def create_records
+    @records = [
+      Factory(:ticket_kind),
+      Factory(:ticket_kind),
+    ]
+  end
+
+  describe "index" do
+    it "should list ticket kinds" do
+      TicketKind.destroy_all
+      create_records
       get :index
-      assigns[:ticket_kinds].should == [mock_ticket_kind]
+      response.should be_success
+      flash[:error].should be_blank
+      assigns[:ticket_kinds].should == @records
+    end
+
+    it "should list empty set" do
+      get :index
+      response.should be_success
+      flash[:error].should be_blank
+      assigns[:ticket_kinds].should == []
     end
   end
 
-  describe "GET show" do
-    it "assigns the requested ticket_kind as @ticket_kind" do
-      TicketKind.stub(:find).with("37").and_return(mock_ticket_kind)
-      get :show, :id => "37"
-      assigns[:ticket_kind].should equal(mock_ticket_kind)
-    end
-  end
-
-  describe "GET new" do
-    it "assigns a new ticket_kind as @ticket_kind" do
-      TicketKind.stub(:new).and_return(mock_ticket_kind)
+  describe "new" do
+    it "should display form" do
       get :new
-      assigns[:ticket_kind].should equal(mock_ticket_kind)
+      response.should be_success
+      flash[:error].should be_blank
     end
   end
 
-  describe "GET edit" do
-    it "assigns the requested ticket_kind as @ticket_kind" do
-      TicketKind.stub(:find).with("37").and_return(mock_ticket_kind)
-      get :edit, :id => "37"
-      assigns[:ticket_kind].should equal(mock_ticket_kind)
+  describe "create" do
+    it "should succeed when given valid attributes" do
+      attributes = Factory.attributes_for(:ticket_kind)
+      post :create, :ticket_kind => attributes
+      response.should redirect_to(ticket_kind_path(assigns[:ticket_kind]))
+      assigns[:ticket_kind].should be_valid
+    end
+
+    it "should fail when given invalid attributes" do
+      attributes = Factory.attributes_for(:ticket_kind, :title => nil)
+      post :create, :ticket_kind => attributes
+      response.should be_success
+      assigns[:ticket_kind].should_not be_valid
     end
   end
 
-  describe "POST create" do
-
-    describe "with valid params" do
-      it "assigns a newly created ticket_kind as @ticket_kind" do
-        TicketKind.stub(:new).with({'these' => 'params'}).and_return(mock_ticket_kind(:save => true))
-        post :create, :ticket_kind => {:these => 'params'}
-        assigns[:ticket_kind].should equal(mock_ticket_kind)
-      end
-
-      it "redirects to the created ticket_kind" do
-        TicketKind.stub(:new).and_return(mock_ticket_kind(:save => true))
-        post :create, :ticket_kind => {}
-        response.should redirect_to(ticket_kind_url(mock_ticket_kind))
-      end
+  describe "show" do
+    it "should succeed" do
+      create_record
+      get :show, :id => @record.id
+      response.should be_success
+      assigns[:ticket_kind].should == @record
     end
-
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved ticket_kind as @ticket_kind" do
-        TicketKind.stub(:new).with({'these' => 'params'}).and_return(mock_ticket_kind(:save => false))
-        post :create, :ticket_kind => {:these => 'params'}
-        assigns[:ticket_kind].should equal(mock_ticket_kind)
-      end
-
-      it "re-renders the 'new' template" do
-        TicketKind.stub(:new).and_return(mock_ticket_kind(:save => false))
-        post :create, :ticket_kind => {}
-        response.should render_template('new')
-      end
-    end
-
   end
 
-  describe "PUT update" do
-
-    describe "with valid params" do
-      it "updates the requested ticket_kind" do
-        TicketKind.should_receive(:find).with("37").and_return(mock_ticket_kind)
-        mock_ticket_kind.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => "37", :ticket_kind => {:these => 'params'}
-      end
-
-      it "assigns the requested ticket_kind as @ticket_kind" do
-        TicketKind.stub(:find).and_return(mock_ticket_kind(:update_attributes => true))
-        put :update, :id => "1"
-        assigns[:ticket_kind].should equal(mock_ticket_kind)
-      end
-
-      it "redirects to the ticket_kind" do
-        TicketKind.stub(:find).and_return(mock_ticket_kind(:update_attributes => true))
-        put :update, :id => "1"
-        response.should redirect_to(ticket_kind_url(mock_ticket_kind))
-      end
+  describe "edit" do
+    it "should succeed" do
+      create_record
+      get :edit, :id => @record.id
+      response.should be_success
+      assigns[:ticket_kind].should == @record
     end
-
-    describe "with invalid params" do
-      it "updates the requested ticket_kind" do
-        TicketKind.should_receive(:find).with("37").and_return(mock_ticket_kind)
-        mock_ticket_kind.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => "37", :ticket_kind => {:these => 'params'}
-      end
-
-      it "assigns the ticket_kind as @ticket_kind" do
-        TicketKind.stub(:find).and_return(mock_ticket_kind(:update_attributes => false))
-        put :update, :id => "1"
-        assigns[:ticket_kind].should equal(mock_ticket_kind)
-      end
-
-      it "re-renders the 'edit' template" do
-        TicketKind.stub(:find).and_return(mock_ticket_kind(:update_attributes => false))
-        put :update, :id => "1"
-        response.should render_template('edit')
-      end
-    end
-
   end
 
-  describe "DELETE destroy" do
-    it "destroys the requested ticket_kind" do
-      TicketKind.should_receive(:find).with("37").and_return(mock_ticket_kind)
-      mock_ticket_kind.should_receive(:destroy)
-      delete :destroy, :id => "37"
+  describe "update" do
+    it "should succeed with valid attributes" do
+      create_record
+      put :update, :id => @record.id, :ticket_kind => @record.attributes
+      response.should redirect_to(ticket_kind_path(@record))
+      assigns[:ticket_kind].should == @record
     end
 
-    it "redirects to the ticket_kinds list" do
-      TicketKind.stub(:find).and_return(mock_ticket_kind(:destroy => true))
-      delete :destroy, :id => "1"
-      response.should redirect_to(ticket_kinds_url)
+    it "should fail with invalid attributes" do
+      record = Factory.stub(:ticket_kind, :title => nil, :id => 123)
+      TicketKind.should_receive(:find).with(record.id.to_s).and_return(record)
+      put :update, :id => record.id.to_s, :ticket_kind => record.attributes
+      response.should be_success
+      assigns[:ticket_kind].should == record
+    end
+  end
+
+  describe "destroy" do
+    it "should succeed" do
+      create_record
+      delete :destroy, :id => @record.id
+      response.should redirect_to(ticket_kinds_path)
+      TicketKind.exists?(@record.id).should be_false
     end
   end
 
