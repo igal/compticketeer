@@ -6,7 +6,118 @@ describe BatchesController do
     login_as_admin
   end
 
-  def mock_batch(stubs={})
+  shared_examples_for "with or without ticket kinds" do
+    # FIXME really
+  end
+
+  describe "with ticket kinds" do
+    it_should_behave_like "with or without ticket kinds"
+
+    before :each do
+      @ticket_kinds = [Factory(:ticket_kind), Factory(:ticket_kind)]
+    end
+
+    describe "new" do
+      it "should display new batch form" do
+        get :new
+        response.should be_success
+        flash[:error].should be_blank
+      end
+    end
+
+    describe "create" do
+      it "should create batch" do
+        post :create, :batch => Factory.attributes_for(:batch, :ticket_kind => @ticket_kinds.first)
+        response.should redirect_to(batch_path(assigns[:batch].id))
+        flash[:error].should be_blank
+      end
+
+      it "should create a batch when given valid params" do
+        batch = Factory :batch
+        Batch.should_receive(:new).with(batch.attributes).and_return(batch)
+        batch.should_receive(:save).and_return(true)
+
+        post :create, :batch => batch.attributes
+
+        response.should redirect_to(batch_path batch)
+        assigns[:batch].should be_valid
+      end
+
+      it "should not create a batch when given invalid params"  do
+        attributes = Factory.attributes_for :batch, :ticket_kind => nil
+        post :create, :batch => attributes
+
+        response.should be_success
+        assigns[:batch].should_not be_valid
+      end
+    end
+
+    describe "index" do
+      it "should list empty set" do
+        Batch.destroy_all
+        get :index
+        response.should be_success
+        assigns[:batches] == []
+      end
+
+      it "should list batches" do
+        batches = [Factory(:batch), Factory(:batch)]
+        get :index
+        response.should be_success
+        assigns[:batches] == batches
+      end
+    end
+
+    describe "show" do
+      it "should show batch" do
+        batch = Factory :batch
+        get :show, :id => batch.id
+        response.should be_success
+        assigns[:batch] == batch
+      end
+    end
+
+    describe "destroy" do
+      it "should destroy batch" do
+        batch = Factory :batch
+        delete :destroy, :id => batch.id
+        response.should redirect_to(batches_path)
+        assigns[:batch] == batch
+        Batch.exists?(batch.id).should == false
+      end
+    end
+  end
+
+  describe "without ticket kinds" do
+    it_should_behave_like "with or without ticket kinds"
+
+    describe "new" do
+      it "should demand that ticket kinds be created first" do
+        get :new
+        response.should redirect_to(new_ticket_kind_path)
+        flash[:error].should_not be_blank
+      end
+    end
+
+    describe "create" do
+      it "should demand that ticket kinds be created first" do
+        post :create, :batch => Factory.attributes_for(:batch, :ticket_kind => nil)
+        response.should redirect_to(new_ticket_kind_path)
+        flash[:error].should_not be_blank
+      end
+    end
+
+    describe "index" do
+      it "should demand that ticket kinds be created first" do
+        get :index
+        response.should redirect_to(new_ticket_kind_path)
+        flash[:error].should_not be_blank
+      end
+    end
+  end
+
+=begin
+def mock_batch(stubs={})
     @mock_batch ||= mock_model(Batch, stubs)
   end
 
@@ -122,5 +233,6 @@ describe BatchesController do
       response.should redirect_to(batches_url)
     end
   end
+=end
 
 end

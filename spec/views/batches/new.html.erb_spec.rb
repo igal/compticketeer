@@ -4,9 +4,8 @@ describe "/batches/new.html.erb" do
   include BatchesHelper
 
   before(:each) do
-    assigns[:batch] = stub_model(Batch,
-      :new_record? => true
-    )
+    assigns[:batch] = Factory.build(:batch, :ticket_kind => nil)
+    assigns[:ticket_kinds] = [Factory.stub :ticket_kind]
   end
 
   it "renders new batch form" do

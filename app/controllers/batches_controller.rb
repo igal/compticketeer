@@ -1,5 +1,5 @@
 class BatchesController < ApplicationController
-  before_filter :assign_ticket_kinds_or_redirect, :only => [:new, :create, :edit, :update]
+  before_filter :assign_ticket_kinds_or_redirect, :only => [:new, :create, :index, :show]
 
   # GET /batches
   # GET /batches.xml
@@ -34,11 +34,6 @@ class BatchesController < ApplicationController
     end
   end
 
-  # GET /batches/1/edit
-  def edit
-    @batch = Batch.find(params[:id])
-  end
-
   # POST /batches
   # POST /batches.xml
   def create
@@ -56,23 +51,6 @@ class BatchesController < ApplicationController
     end
   end
 
-  # PUT /batches/1
-  # PUT /batches/1.xml
-  def update
-    @batch = Batch.find(params[:id])
-
-    respond_to do |format|
-      if @batch.update_attributes(params[:batch])
-        flash[:notice] = 'Batch was successfully updated.'
-        format.html { redirect_to(@batch) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @batch.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
   # DELETE /batches/1
   # DELETE /batches/1.xml
   def destroy
@@ -80,7 +58,7 @@ class BatchesController < ApplicationController
     @batch.destroy
 
     respond_to do |format|
-      format.html { redirect_to(batches_url) }
+      format.html { redirect_to(batches_path) }
       format.xml  { head :ok }
     end
   end
