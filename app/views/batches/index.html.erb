@@ -2,14 +2,19 @@
 
 <table>
   <tr>
+    <th>ID</th>
+    <th>Manage</th>
   </tr>
 
-<% @batches.each do |batch| %>
-  <tr>
-    <td><%= link_to 'Show', batch %></td>
-    <td><%= link_to 'Edit', edit_batch_path(batch) %></td>
-  </tr>
-<% end %>
+  <% @batches.each do |batch| %>
+    <tr>
+      <td><%= batch.id %></td>
+      <td>
+        <%= link_to 'Show', batch %> |
+        <%= link_to 'Edit', edit_batch_path(batch) %>
+      </td>
+    </tr>
+  <% end %>
 </table>
 
 <br />
