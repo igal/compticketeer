@@ -19,7 +19,9 @@ a:hover { color: #fff; background-color:#000; }
 .fieldWithErrors {
   padding: 2px;
   background-color: red;
-  display: table;
+  /* TODO: Figure out how to style these so that things like radio buttons and textareas get sensible formatting */
+  /* Default was: display: table; */
+  display: inline;
 }
 
 #errorExplanation {
