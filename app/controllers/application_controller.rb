@@ -9,68 +9,53 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   # Scrub sensitive parameters from your log
-  filter_parameter_logging :password
+  filter_parameter_logging :password, :password_confirmation
 
   # Filters
-  before_filter :authenticate
+  before_filter :require_user
 
   protected
 
-  # Return kind of authentication, e.g. :digest or :basic.
-  def authentication_kind
-    if defined?(@_authentication_kind) and not @_authentication_kind.nil?
-      return @_authentication_kind
-    else
-      return @_authentication_kind = :basic
+  #==[ Utilities ]==============================================================
+
+  def current_user_session
+    return @current_user_session if defined?(@current_user_session)
+    @current_user_session = UserSession.find
+  end
+  helper_method :current_user_session
+
+  def current_user
+    return @current_user if defined?(@current_user)
+    @current_user = current_user_session && current_user_session.record
+  end
+  helper_method :current_user
+
+  #==[ Filters ]================================================================
+
+  def require_user
+    unless current_user
+      store_location
+      flash[:notice] = "You must be logged in to access this page"
+      redirect_to new_user_session_url
+      return false
     end
   end
 
-  # Set the authentication kind, e.g. :digest or :basic.
-  def authentication_kind=(value)
-    @_authentication_kind = value
-  end
-
-  # Should the user be authenticated?
-  def authenticate?
-    if defined?(@_authenticate) and not @_authenticate.nil?
-      return @_authenticate
-    else
-      return @_authenticate = true
+  def require_no_user
+    if current_user
+      store_location
+      flash[:notice] = "You must be logged out to access this page"
+      redirect_to root_url
+      return false
     end
   end
 
-  # Change whether the user should be authenticated.
-  def authenticate=(value)
-    @_authenticate = value
+  def store_location
+    session[:return_to] = request.request_uri
   end
 
-  # Authenticate the user.
-  def authenticate
-    if authenticate?
-      # NOTE: Temporarily using HTTP Basic Auth because we can't figure out how
-      # to set a sensible timeout for HTTP Digest Auth -- it seems to default
-      # to 120 seconds, which is very annoying.
-      case self.authentication_kind
-      when :basic
-        users_and_passwords = { SECRETS.username => SECRETS.password }
-        authenticate_or_request_with_http_basic do |username, password|
-          password ?
-            password == users_and_passwords[username] :
-            false
-        end
-      when :digest
-        users_and_passwords = { SECRETS.username => SECRETS.password }
-        users_and_digests = {}
-        users_and_passwords.each_pair do |user, password|
-          users_and_digests[user] = Digest::MD5::hexdigest([user, SECRETS.realm, password].join(":"))
-        end
-
-        authenticate_or_request_with_http_digest(SECRETS.realm) do |username|
-          users_and_digests[username] || false
-        end
-      else
-        raise ArgumentError, "Unknown autnethication kind: #{self.authentication_kind}"
-      end
-    end
+  def redirect_back_or_default(default)
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
   end
 end

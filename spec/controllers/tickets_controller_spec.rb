@@ -3,7 +3,7 @@ require 'spec_helper'
 describe TicketsController do
 
   before :each do
-    @controller.send(:authenticate=, false)
+    login_as_admin
   end
 
   def mock_ticket(stubs={})
