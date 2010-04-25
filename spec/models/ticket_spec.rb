@@ -1,18 +1,21 @@
 require 'spec_helper'
 
 describe Ticket do
-  before(:each) do
-    @valid_attributes = {
-      :ticket_kind_id => 1,
-      :batch_id => 1,
-      :email => "value for email",
-      :processed => false,
-      :error => "value for error",
-      :processed_at => Time.now
-    }
+  it "should create a new instance given valid attributes" do
+    Factory(:ticket)
   end
 
-  it "should create a new instance given valid attributes" do
-    Ticket.create!(@valid_attributes)
+  describe "status" do
+    it "should have :pending status intially" do
+      Factory.build(:ticket, :processed => nil, :error => nil).status.should == :pending
+    end
+
+    it "should have :sent status if processed and has no error" do
+      Factory.build(:ticket, :processed => true, :error => nil).status.should == :sent
+    end
+
+    it "should have :failed status if processed and has an error" do
+      Factory.build(:ticket, :processed => true, :error => "omg").status.should == :failed
+    end
   end
 end

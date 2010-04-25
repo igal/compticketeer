@@ -12,11 +12,9 @@ class Ticket < ActiveRecord::Base
   # * :pending
   def status
     if self.processed
-      if self.error
-        :failed
-      else
+      self.error ?
+        :failed :
         :sent
-      end
     else
       :pending
     end
