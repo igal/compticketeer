@@ -3,20 +3,19 @@
 <table>
   <tr>
     <th>Title</th>
-    <th>Prefix</th>
-    <th>Template</th>
+    <th>Manage</th>
   </tr>
 
-<% @ticket_kinds.each do |ticket_kind| %>
-  <tr>
-    <td><%=h ticket_kind.title %></td>
-    <td><%=h ticket_kind.prefix %></td>
-    <td><%=h ticket_kind.template %></td>
-    <td><%= link_to 'Show', ticket_kind %></td>
-    <td><%= link_to 'Edit', edit_ticket_kind_path(ticket_kind) %></td>
-    <td><%= link_to 'Destroy', ticket_kind, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
+  <% @ticket_kinds.each do |ticket_kind| %>
+    <tr>
+      <td><%=h ticket_kind.title %></td>
+      <td>
+        <%= link_to 'Show', ticket_kind_path(ticket_kind) %> |
+        <%= link_to 'Edit', edit_ticket_kind_path(ticket_kind) %> |
+        <%= link_to 'Destroy', ticket_kind, :confirm => 'Are you sure?', :method => :delete %>
+      </td>
+    </tr>
+  <% end %>
 </table>
 
 <br />
