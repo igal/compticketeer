@@ -2,6 +2,8 @@ class Batch < ActiveRecord::Base
   has_many :tickets
   belongs_to :ticket_kind
 
+  named_scope :ordered, :order => 'created_at desc'
+
   validates_presence_of :ticket_kind_id
   validates_presence_of :emails
  

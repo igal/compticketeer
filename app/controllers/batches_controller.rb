@@ -4,7 +4,7 @@ class BatchesController < ApplicationController
   # GET /batches
   # GET /batches.xml
   def index
-    @batches = Batch.all
+    @batches = Batch.ordered
 
     respond_to do |format|
       format.html # index.html.erb
