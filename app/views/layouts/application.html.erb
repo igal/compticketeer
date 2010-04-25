@@ -24,6 +24,14 @@
 
   <h1><%= page_title %></h1>
 
+  <% if flash.present? %>
+    <% flash.each_pair do |level, message| %>
+      <div class="flash_notification flash_notification_<%= level %>">
+        <%= message %>
+      </div>
+    <% end %>
+  <% end %>
+
   <%= yield %>
 </body>
 </html>
