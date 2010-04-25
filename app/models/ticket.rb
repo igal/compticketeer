@@ -5,4 +5,20 @@ class Ticket < ActiveRecord::Base
   validates_presence_of :batch
   validates_presence_of :ticket_kind
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, :on => :create
+
+  # Return the status of this ticket:
+  # * :failed
+  # * :sent
+  # * :pending
+  def status
+    if self.processed
+      if self.error
+        :failed
+      else
+        :sent
+      end
+    else
+      :pending
+    end
+  end
 end
