@@ -1,4 +1,22 @@
 <% page_title "Show batch" %>
 
-<%= link_to 'Edit', edit_batch_path(@batch) %> |
+Kind: <%= @batch.ticket_kind.title %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Status</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for ticket in @batch.tickets %>
+      <tr>
+        <td><%= ticket.status %></td>
+        <td><%= ticket.email %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
 <%= link_to 'Back', batches_path %>
