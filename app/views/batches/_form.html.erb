@@ -2,7 +2,7 @@
   <%= f.error_messages %>
 
   Type of ticket to send:
-  <% for kind in TicketKind.ordered %>
+  <% for kind in @ticket_kinds %>
     <%= f.radio_button :ticket_kind_id, kind.id %>
     <label for="batch_ticket_kind_id_<%= kind.id %>">
       <%= kind.title %>

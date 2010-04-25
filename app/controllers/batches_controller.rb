@@ -1,4 +1,6 @@
 class BatchesController < ApplicationController
+  before_filter :assign_ticket_kinds_or_redirect, :only => [:new, :create, :edit, :update]
+
   # GET /batches
   # GET /batches.xml
   def index
@@ -80,6 +82,18 @@ class BatchesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(batches_url) }
       format.xml  { head :ok }
+    end
+  end
+
+  protected
+
+  # Set @ticket_kinds variable or redirect to new ticket kind form if none are available.
+  def assign_ticket_kinds_or_redirect
+    if TicketKind.count == 0
+      flash[:error] = "You must create at least one kind of ticket before creating tickets."
+      redirect_to new_ticket_kind_path
+    else
+      @ticket_kinds = TicketKind.ordered
     end
   end
 end
