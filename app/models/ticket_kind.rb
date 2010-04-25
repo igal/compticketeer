@@ -1,8 +1,8 @@
 class TicketKind < ActiveRecord::Base
-  named_scope :ordered, :order => "title asc"
+  named_scope :ordered, :order => "lower(title) asc"
 
   has_many :tickets
-
+  
   validates_presence_of :title
   validates_length_of :title, :within => 1..128
   validates_presence_of :prefix
