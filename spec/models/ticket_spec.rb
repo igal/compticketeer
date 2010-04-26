@@ -82,7 +82,7 @@ describe Ticket do
       stub_eventbrite_secrets
 
       res = Net::HTTPOK.new('1.1', '200', 'Yay!')
-      res.stub!(:body => {"error"=>{"error_message"=>"Please Please enter a valid discount code.", "error_type"=>"Discount error"}}.to_json)
+      res.stub!(:body => {"error"=>{"error_message"=>"Please enter a valid discount code.", "error_type"=>"Discount error"}}.to_json)
       Net::HTTP.should_receive(:post_form).and_return(res)
       ticket = Factory(:ticket)
 
