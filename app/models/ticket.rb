@@ -15,32 +15,26 @@ class Ticket < ActiveRecord::Base
   before_validation :set_ticket_kind
   before_validation :generate_discount_code
 
-  # Disable the registration of EventBrite codes during tests?
-  cattr_accessor :disable_register_eventbrite_code
+  # Disable the registration of codes during tests?
+  cattr_accessor :disable_register_code
 
-  # Return the status of this ticket:
-  # * :failed
-  # * :sent
-  # * :pending
-  def status
-    if self.processed
-      self.error ?
-        :failed :
-        :sent
-    else
-      :pending
-    end
-  end
-
-  # Process this ticket and return the status.
-  def process
-    self.register_eventbrite_code
-    self.send_email
-
-    self.processed = true
-    self.save!
-    return self.status
-  end
+  # Acts As State Machine
+  include AASM
+  aasm_column :status
+  aasm_initial_state :created
+  aasm_state :created
+  aasm_state :registering_code
+  aasm_state :registered_code
+  aasm_state :failed_to_register_code
+  aasm_state :sending_email
+  aasm_state :sent_email
+  aasm_state :failed_to_send_email
+  aasm_event(:registering_code)        { transitions :to => :registering_code,        :from => :created }
+  aasm_event(:registered_code)         { transitions :to => :registered_code,         :from => :registering_code }
+  aasm_event(:failed_to_register_code) { transitions :to => :failed_to_register_code, :from => :registering_code }
+  aasm_event(:sending_email)           { transitions :to => :sending_email,           :from => :registered_code }
+  aasm_event(:sent_email)              { transitions :to => :sent_email,              :from => :registered_code }
+  aasm_event(:failed_to_send_email)    { transitions :to => :failed_to_send_email,    :from => :sending_email }
 
   # Set this ticket's kind if needed and one's available in the batch.
   def set_ticket_kind
@@ -60,13 +54,23 @@ class Ticket < ActiveRecord::Base
     end
   end
 
+  # Process this ticket and return the status.
+  def process
+    self.register_code
+    self.send_email
+    return self.status
+  end
+
   # Register the discount code with EventBrite.
-  def register_eventbrite_code
-    if self.class.disable_register_eventbrite_code
+  def register_code
+    self.registering_code!
+    if self.class.disable_register_code
+      self.registered_code!
       return false
     else
       if SECRETS.eventbrite_data['app_key'] == 'test'
-        self.error = "Couldn't register EventBrite code because no API key was defined in 'config/secrets.yml'"
+        self.update_attribute :report, "Couldn't register EventBrite code because no API key was defined in 'config/secrets.yml'"
+        self.failed_to_register_code!
         return false
       end
 
@@ -85,20 +89,29 @@ class Ticket < ActiveRecord::Base
         begin
           answer = JSON.parse(res.body)
           if answer['error']
-            self.error = "Could not register EventBrite code: #{res.body}"
+            self.update_attribute :report, "Could not register EventBrite code: #{res.body}"
+            self.failed_to_register_code!
             return false
           else
-            # SUCCESS!!1!
+            self.update_attribute :report, "Registered EventBrite code: #{res.body}"
+            self.registered_code!
             return true
           end
         rescue JSON::ParserError => e
-          self.error = "Could not parse EventBrite JSON response: #{res.body}"
+          self.update_attribute :report, "Could not parse EventBrite JSON response: #{res.body}"
+          self.failed_to_register_code!
           return false
         end
       else
-        self.error = "Could not register EventBrite code, got HTTP status #{res.code}: #{res.body}"
+        self.update_attribute :report, "Could not register EventBrite code, got HTTP status #{res.code}: #{res.body}"
+        self.failed_to_register_code!
         return false
       end
     end
+  end
+
+  # Send email for this ticket.
+  def send_email
+    puts "TODO implement" # TODO implement
   end
 end

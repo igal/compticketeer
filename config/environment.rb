@@ -8,6 +8,7 @@ require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
   # Specify gems that this application depends on and have them installed with rake gems:install
+  config.gem 'aasm'
   config.gem 'authlogic'
   if ['development', 'test'].include? RAILS_ENV
     config.gem 'factory_girl', :lib => false

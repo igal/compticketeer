@@ -7,7 +7,7 @@
     <th>Discount Code</th>
     <th>Kind</th>
     <th>Status</th>
-    <th>Error</th>
+    <th>Report</th>
   </tr>
 
 <% @tickets.each do |ticket| %>
@@ -17,7 +17,7 @@
     <td><%=h ticket.discount_code %></td>
     <td><%=h ticket.ticket_kind.title %></td>
     <td><%=h ticket.status %></td>
-    <td><%=h ticket.error %></td>
+    <td><%=h ticket.report %></td>
     <td><%= link_to 'Show', ticket %></td>
     <td><%= link_to 'Edit', edit_ticket_path(ticket) %></td>
     <td><%= link_to 'Destroy', ticket, :confirm => 'Are you sure?', :method => :delete %></td>
