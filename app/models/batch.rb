@@ -1,5 +1,5 @@
 class Batch < ActiveRecord::Base
-  has_many :tickets
+  has_many :tickets, :dependent => :destroy
   belongs_to :ticket_kind
 
   named_scope :ordered, :order => 'created_at desc'
