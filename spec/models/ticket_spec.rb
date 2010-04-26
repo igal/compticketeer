@@ -20,15 +20,22 @@ describe Ticket do
   end
 
   describe "ticket_kind" do
-    it "should get its ticket_kind from the batch it's created in" do
-      kind = Factory(:ticket_kind, :title => 'Volunteer')
+    it "should assign ticket_kind from the assigned batch" do
+      kind = Factory(:ticket_kind)
       batch = Factory(:batch, :ticket_kind => kind)
-      Factory(:ticket, :batch => batch).ticket_kind.title.should == 'Volunteer'
+      Factory(:ticket, :batch => batch).ticket_kind.should == kind
+    end
+
+    it "should not reset ticket_kind if already set" do
+      kind = Factory.build(:ticket_kind)
+      ticket = Factory.build(:ticket, :ticket_kind => kind)
+      ticket.should_not_receive(:ticket_kind=)
+      ticket.save!
     end
   end
 
   describe "discount_code" do
-    it "should have a generated discount code" do
+    it "should generated discount code" do
       kind = Factory(:ticket_kind, :title => 'Speaker')
       batch = Factory(:batch, :ticket_kind => kind)
       Factory(:ticket, :email => "foo@bar.com", :batch => batch).discount_code.should == "speaker_foobarcom"

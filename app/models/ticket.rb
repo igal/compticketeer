@@ -31,8 +31,11 @@ class Ticket < ActiveRecord::Base
 
   private
 
+  # Set this ticket's kind if needed and one's available in the batch.
   def set_ticket_kind
-    self.ticket_kind = self.batch.ticket_kind
+    if self.ticket_kind.nil? && self.batch && self.batch.ticket_kind
+      self.ticket_kind = self.batch.ticket_kind
+    end
   end
 
   def generate_discount_code
