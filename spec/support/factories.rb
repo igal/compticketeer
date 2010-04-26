@@ -8,7 +8,6 @@ end
 
 Factory.define :ticket_kind do |f|
   f.sequence(:title) { |n| "ticket_kind_#{n}"}
-  f.prefix { |r| r.title.to_s.downcase.gsub(/\W/, '') }
   f.template "Template text here!"
 end
 
