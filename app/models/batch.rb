@@ -26,7 +26,7 @@ class Batch < ActiveRecord::Base
   # Validate the associated tickets and add validation errors if needed.
   def validate_tickets
     if self.errors[:tickets]
-      self.errors.clear # TODO Do we lose other non-ticket errors this way?
+      self.errors.clear
       for ticket in self.tickets
         next if ticket.valid?
         self.errors.add_to_base("Ticket with address '#{ticket.email}': " + ticket.errors.full_messages.join(', '))
