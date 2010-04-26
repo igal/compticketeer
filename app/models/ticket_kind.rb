@@ -10,12 +10,17 @@ class TicketKind < ActiveRecord::Base
   validates_presence_of :template
   validates_length_of :template, :minimum => 1
 
-  before_validation :set_prefix
-
-private
-
-  def set_prefix
-    self.prefix = self.title.to_s.gsub(/\W/, '').downcase
+  # Override title to automatically set prefix if needed.
+  def title=(value)
+    super(value)
+    self.set_prefix
+    return self.title
   end
 
+  # Set the prefix if one isn't set.
+  def set_prefix
+    if self.prefix.nil? && self.title.present?
+      self.prefix = self.title.to_s.gsub(/\W/, '').downcase
+    end
+  end
 end

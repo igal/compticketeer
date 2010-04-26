@@ -17,4 +17,9 @@ describe TicketKind do
     Factory(:ticket_kind, :title => 'Volunteer').prefix.should == 'volunteer'
   end
 
+  it "should not set prefix if no title is set" do
+    kind = Factory.build(:ticket_kind, :title => nil)
+    kind.should_not_receive(:prefix=)
+    kind.valid?
+  end
 end
