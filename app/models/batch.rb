@@ -6,7 +6,7 @@ class Batch < ActiveRecord::Base
 
   validates_presence_of :ticket_kind_id
   validates_presence_of :emails
- 
+
   before_validation :create_tickets
   after_validation :validate_tickets
 
@@ -16,13 +16,17 @@ class Batch < ActiveRecord::Base
   def create_tickets
     for email in self.emails.split(/\s+/).map(&:strip)
       self.tickets << Ticket.new(:email => email, :ticket_kind => self.ticket_kind, :batch => self)
+      Ticket.find_all_by_email(email).each do |prev_ticket|
+        # TODO how to pass this message to controller/view
+        logger.warn "Warning: This email already has a #{prev_ticket.ticket_kind.title.upcase} ticket code, emailed status = #{prev_ticket.status.to_s.upcase}"
+      end
     end
   end
 
   # Validate the associated tickets and add validation errors if needed.
   def validate_tickets
     if self.errors[:tickets]
-      self.errors.clear
+      self.errors.clear # TODO Do we lose other non-ticket errors this way?
       for ticket in self.tickets
         next if ticket.valid?
         self.errors.add_to_base("Ticket with address '#{ticket.email}': " + ticket.errors.full_messages.join(', '))
