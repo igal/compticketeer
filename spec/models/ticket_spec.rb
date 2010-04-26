@@ -35,10 +35,22 @@ describe Ticket do
   end
 
   describe "discount_code" do
-    it "should generated discount code" do
+    it "should be generated" do
       kind = Factory(:ticket_kind, :title => 'Speaker')
       batch = Factory(:batch, :ticket_kind => kind)
       Factory(:ticket, :email => "foo@bar.com", :batch => batch).discount_code.should == "speaker_foobarcom"
+    end
+
+    it "should not be generated if already set" do
+      ticket = Factory(:ticket)
+      ticket.should_not_receive(:discount_code=)
+      ticket.generate_discount_code
+    end
+
+    it "should not be generated if no email set" do
+      ticket = Factory.build(:ticket, :email => nil)
+      ticket.should_not_receive(:discount_code=)
+      ticket.generate_discount_code
     end
   end
 end

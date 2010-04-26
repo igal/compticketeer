@@ -38,9 +38,15 @@ class Ticket < ActiveRecord::Base
     end
   end
 
+  # Generate a discount code for this ticket.
   def generate_discount_code
-    self.discount_code = self.ticket_kind ? self.ticket_kind.prefix : ''  # check ticket_kind existence because this method is called before_validation
-    self.discount_code += '_' + self.email.gsub(/\W/, '')
+    if self.discount_code.nil? && self.email.present?
+      # Add a prefix to the ticket if possible
+      s = self.ticket_kind ? (self.ticket_kind.prefix + '_') : ''
+      # Generate a discount code based on the user's email
+      s << self.email.gsub(/\W/, '')
+      self.discount_code = s
+    end
   end
 
   def register_eventbrite_code
