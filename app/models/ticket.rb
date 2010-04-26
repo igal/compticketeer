@@ -15,6 +15,9 @@ class Ticket < ActiveRecord::Base
   before_validation :set_ticket_kind
   before_validation :generate_discount_code
 
+  # Disable the registration of EventBrite codes during tests?
+  cattr_accessor :disable_register_eventbrite_code
+
   # Return the status of this ticket:
   # * :failed
   # * :sent
