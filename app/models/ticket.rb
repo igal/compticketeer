@@ -29,7 +29,15 @@ class Ticket < ActiveRecord::Base
     end
   end
 
-  private
+  # Process this ticket and return the status.
+  def process
+    self.register_eventbrite_code
+    self.send_email
+
+    self.processed = true
+    self.save!
+    return self.status
+  end
 
   # Set this ticket's kind if needed and one's available in the batch.
   def set_ticket_kind

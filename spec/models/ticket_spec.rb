@@ -53,4 +53,15 @@ describe Ticket do
       ticket.generate_discount_code
     end
   end
+
+  describe "process" do
+    it "should register EventBrite code, send email and set processed flag" do
+      ticket = Factory(:ticket)
+      ticket.should_receive(:register_eventbrite_code)
+      ticket.should_receive(:send_email)
+      ticket.should_receive(:processed=).with(true)
+      ticket.should_receive(:save!)
+      ticket.process.should == :sent
+    end
+  end
 end
