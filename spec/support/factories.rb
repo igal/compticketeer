@@ -14,8 +14,7 @@ end
 Factory.define :ticket do |f|
   f.association :batch
   f.sequence(:email) { |n| "ticket_#{n}@provider.com"}
-  f.processed true
-  f.error nil
+  f.report nil
   f.processed_at Time.now
 end
 
