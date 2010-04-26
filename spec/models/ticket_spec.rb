@@ -6,16 +6,8 @@ describe Ticket do
   end
 
   describe "status" do
-    it "should have :pending status intially" do
-      Factory(:ticket, :processed => nil, :error => nil).status.should == :pending
-    end
-
-    it "should have :sent status if processed and has no error" do
-      Factory(:ticket, :processed => true, :error => nil).status.should == :sent
-    end
-
-    it "should have :failed status if processed and has an error" do
-      Factory(:ticket, :processed => true, :error => "omg").status.should == :failed
+    it "should have 'created' status intially" do
+      Factory(:ticket, :report => nil).status.should == 'created'
     end
   end
 
@@ -55,13 +47,11 @@ describe Ticket do
   end
 
   describe "process" do
-    it "should register EventBrite code, send email and set processed flag" do
+    it "should register code and send email" do
       ticket = Factory(:ticket)
       ticket.should_receive(:register_code)
       ticket.should_receive(:send_email)
-      ticket.should_receive(:processed=).with(true)
-      ticket.should_receive(:save!)
-      ticket.process.should == :sent
+      ticket.process
     end
   end
 
@@ -84,7 +74,7 @@ describe Ticket do
       ticket = Factory(:ticket)
 
       ticket.register_code.should be_true
-      ticket.error.should be_nil
+      ticket.status.should == "registered_code"
     end
 
     it "should fail if EventBrite responds with an API error" do
@@ -97,7 +87,8 @@ describe Ticket do
       ticket = Factory(:ticket)
 
       ticket.register_code.should be_false
-      ticket.error.should =~ /valid discount code/
+      ticket.report.should =~ /Discount error/
+      ticket.status.should == "failed_to_register_code"
     end
 
     it "should fail if EventBrite responds with invalid JSON" do
@@ -110,7 +101,8 @@ describe Ticket do
       ticket = Factory(:ticket)
 
       ticket.register_code.should be_false
-      ticket.error.should =~ /JSON/
+      ticket.report.should =~ /JSON/
+      ticket.status.should == "failed_to_register_code"
     end
 
     it "should fail if EventBrite rejects request" do
@@ -123,7 +115,8 @@ describe Ticket do
       ticket = Factory(:ticket)
 
       ticket.register_code.should be_false
-      ticket.error.should =~ /401.+Get off my lawn/
+      ticket.report.should =~ /401.+Get off my lawn/
+      ticket.status.should == "failed_to_register_code"
     end
 
     it "should fail if SECRETS haven't been configured" do
@@ -134,7 +127,8 @@ describe Ticket do
       ticket = Factory(:ticket)
 
       ticket.register_code.should be_false
-      ticket.error.should =~ /.+secrets\.yml.+/
+      ticket.report.should =~ /.+secrets\.yml.+/
+      ticket.status.should == "failed_to_register_code"
     end
 
     # TODO test remaining paths
