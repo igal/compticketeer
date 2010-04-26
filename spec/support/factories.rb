@@ -3,11 +3,11 @@ require 'factory_girl'
 Factory.define :batch do |f|
   f.emails "foo@bar.com\nbaz@qux.org"
   f.association :ticket_kind
+  f.created_at Time.now
 end
 
 Factory.define :ticket_kind do |f|
   f.sequence(:title) { |n| "ticket_kind_#{n}"}
-  f.prefix { |r| r.title.to_s.downcase.gsub(/\W/, '') }
   f.template "Template text here!"
 end
 

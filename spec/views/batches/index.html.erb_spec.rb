@@ -5,8 +5,8 @@ describe "/batches/index.html.erb" do
 
   before(:each) do
     assigns[:batches] = [
-      stub_model(Batch),
-      stub_model(Batch)
+      Factory.stub(:batch),
+      Factory.stub(:batch),
     ]
   end
 

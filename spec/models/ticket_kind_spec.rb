@@ -12,4 +12,9 @@ describe TicketKind do
   it "should create a new instance given valid attributes" do
     TicketKind.create!(@valid_attributes)
   end
+
+  it "should set the prefix correctly" do
+    Factory(:ticket_kind, :title => 'Volunteer').prefix.should == 'volunteer'
+  end
+
 end
