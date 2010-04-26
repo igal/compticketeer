@@ -3,6 +3,7 @@ require 'factory_girl'
 Factory.define :batch do |f|
   f.emails "foo@bar.com\nbaz@qux.org"
   f.association :ticket_kind
+  f.created_at Time.now
 end
 
 Factory.define :ticket_kind do |f|
