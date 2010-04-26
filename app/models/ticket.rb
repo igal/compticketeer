@@ -60,22 +60,45 @@ class Ticket < ActiveRecord::Base
     end
   end
 
+  # Register the discount code with EventBrite.
   def register_eventbrite_code
-    url = URI.parse('http://www.eventbrite.com/json/discount_new')
-    req = Net::HTTP::Post.new(url.path)
-
-    eventbrite_data = SECRETS.eventbrite_data
-    eventbrite_data << {
-        code => self.discount_code,
-    }
-    req.set_form_data(eventbrite_data, '&')
-    res = Net::HTTP.new(url.host, url.port).start {|http| http.request(req) }
-    case res
-    when Net::HTTPSuccess, Net::HTTPRedirection
-      # OK
+    if self.class.disable_register_eventbrite_code
+      return false
     else
-      res.error!
-    end
+      if SECRETS.eventbrite_data['app_key'] == 'test'
+        self.error = "Couldn't register EventBrite code because no API key was defined in 'config/secrets.yml'"
+        return false
+      end
 
+      query = {
+        'code' => self.discount_code,
+        'percent_off' => '100',
+        'quantity_available' => '1',
+      }
+      for key in %w[app_key user_key event_id tickets]
+        query[key] = SECRETS.eventbrite_data[key]
+      end
+
+      res = Net::HTTP.post_form(URI.parse('http://www.eventbrite.com/json/discount_new'), query)
+      case res
+      when Net::HTTPOK
+        begin
+          answer = JSON.parse(res.body)
+          if answer['error']
+            self.error = "Could not register EventBrite code: #{res.body}"
+            return false
+          else
+            # SUCCESS!!1!
+            return true
+          end
+        rescue JSON::ParserError => e
+          self.error = "Could not parse EventBrite JSON response: #{res.body}"
+          return false
+        end
+      else
+        self.error = "Could not register EventBrite code, got HTTP status #{res.code}: #{res.body}"
+        return false
+      end
+    end
   end
 end

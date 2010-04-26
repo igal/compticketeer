@@ -64,4 +64,79 @@ describe Ticket do
       ticket.process.should == :sent
     end
   end
+
+  describe "register_eventbrite_code" do
+    it "should not register during tests unless overridden" do
+      ticket = Factory(:ticket)
+      Net::HTTP.should_not_receive(:post_form)
+
+      Ticket.disable_register_eventbrite_code.should be_true
+      ticket.register_eventbrite_code.should be_false
+    end
+
+    it "should register" do
+      Ticket.stub!(:disable_register_eventbrite_code => false)
+      stub_eventbrite_secrets
+
+      res = Net::HTTPOK.new('1.1', '200', 'Yay!')
+      res.stub!(:body => {"process"=>{"id"=>268329, "message"=>"discount_new : Complete ", "status"=>"OK"}}.to_json)
+      Net::HTTP.should_receive(:post_form).and_return(res)
+      ticket = Factory(:ticket)
+
+      ticket.register_eventbrite_code.should be_true
+      ticket.error.should be_nil
+    end
+
+    it "should fail if EventBrite responds with an API error" do
+      Ticket.stub!(:disable_register_eventbrite_code => false)
+      stub_eventbrite_secrets
+
+      res = Net::HTTPOK.new('1.1', '200', 'Yay!')
+      res.stub!(:body => {"error"=>{"error_message"=>"Please Please enter a valid discount code.", "error_type"=>"Discount error"}}.to_json)
+      Net::HTTP.should_receive(:post_form).and_return(res)
+      ticket = Factory(:ticket)
+
+      ticket.register_eventbrite_code.should be_false
+      ticket.error.should =~ /valid discount code/
+    end
+
+    it "should fail if EventBrite responds with invalid JSON" do
+      Ticket.stub!(:disable_register_eventbrite_code => false)
+      stub_eventbrite_secrets
+
+      res = Net::HTTPOK.new('1.1', '200', 'Yay!')
+      res.stub!(:body => 'invalid/json')
+      Net::HTTP.should_receive(:post_form).and_return(res)
+      ticket = Factory(:ticket)
+
+      ticket.register_eventbrite_code.should be_false
+      ticket.error.should =~ /JSON/
+    end
+
+    it "should fail if EventBrite rejects request" do
+      Ticket.stub!(:disable_register_eventbrite_code => false)
+      stub_eventbrite_secrets
+
+      res = Net::HTTPForbidden.new('1.1', '401', 'Go away!')
+      res.stub!(:body => 'Get off my lawn!')
+      Net::HTTP.should_receive(:post_form).and_return(res)
+      ticket = Factory(:ticket)
+
+      ticket.register_eventbrite_code.should be_false
+      ticket.error.should =~ /401.+Get off my lawn/
+    end
+
+    it "should fail if SECRETS haven't been configured" do
+      Ticket.stub!(:disable_register_eventbrite_code => false)
+      stub_invalid_eventbrite_secrets
+
+      Net::HTTP.should_not_receive(:post_form)
+      ticket = Factory(:ticket)
+
+      ticket.register_eventbrite_code.should be_false
+      ticket.error.should =~ /.+secrets\.yml.+/
+    end
+
+    # TODO test remaining paths
+  end
 end
