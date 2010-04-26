@@ -1,7 +1,7 @@
 class TicketKind < ActiveRecord::Base
   named_scope :ordered, :order => "lower(title) asc"
 
-  has_many :tickets
+  has_many :tickets, :dependent => :destroy
 
   validates_presence_of :title
   validates_length_of :title, :within => 1..128
