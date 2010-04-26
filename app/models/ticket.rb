@@ -36,4 +36,22 @@ class Ticket < ActiveRecord::Base
     self.discount_code += '_' + self.email.gsub(/\W/, '')
   end
 
+  def register_eventbrite_code
+    url = URI.parse('http://www.eventbrite.com/json/discount_new')
+    req = Net::HTTP::Post.new(url.path)
+
+    eventbrite_data = SECRETS.eventbrite_data
+    eventbrite_data << {
+        code => self.discount_code,
+    }
+    req.set_form_data(eventbrite_data, '&')
+    res = Net::HTTP.new(url.host, url.port).start {|http| http.request(req) }
+    case res
+    when Net::HTTPSuccess, Net::HTTPRedirection
+      # OK
+    else
+      res.error!
+    end
+
+  end
 end
