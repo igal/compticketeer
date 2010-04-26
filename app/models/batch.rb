@@ -21,8 +21,11 @@ class Batch < ActiveRecord::Base
 
   # Validate the associated tickets and add validation errors if needed.
   def validate_tickets
+    # NOTE: This strange method is run at the end of validation and replaces
+    # the vague "Tickets is invalid" validation error with more useful messages
+    # that explain what tickets had what errors.
     if self.errors[:tickets]
-      self.errors.clear
+      self.errors.instance_variable_get(:@errors).delete('tickets')
       for ticket in self.tickets
         next if ticket.valid?
         self.errors.add_to_base("Ticket with address '#{ticket.email}': " + ticket.errors.full_messages.join(', '))
