@@ -1,13 +1,17 @@
 class Ticket < ActiveRecord::Base
+  # Associations
   belongs_to :batch
   belongs_to :ticket_kind
 
+  # Scopes
   named_scope :ordered, :order => 'created_at desc'
 
+  # Validations
   validates_presence_of :batch
   validates_presence_of :ticket_kind
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, :on => :create
 
+  # Callbacks
   before_validation :set_ticket_kind
   before_validation :generate_discount_code
 
