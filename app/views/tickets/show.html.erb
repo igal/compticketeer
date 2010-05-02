@@ -1,6 +1,11 @@
 <% page_title "Show ticket" %>
 
 <p>
+  <b>Status:</b>
+  <%=h @ticket.status_label %>
+</p>
+
+<p>
   <b>Ticket kind:</b>
   <%=h @ticket.ticket_kind_id %>
 </p>
