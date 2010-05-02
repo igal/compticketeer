@@ -41,6 +41,7 @@ class BatchesController < ApplicationController
 
     respond_to do |format|
       if @batch.save
+        @batch.process_asynchronously
         flash[:notice] = 'Batch was successfully created.'
         format.html { redirect_to(@batch) }
         format.xml  { render :xml => @batch, :status => :created, :location => @batch }

@@ -77,6 +77,21 @@ describe Ticket do
       ticket.status.should == "registered_code"
     end
 
+    it "should update" do
+      Ticket.stub!(:disable_register_code => false)
+      stub_eventbrite_secrets
+
+      res = Net::HTTPOK.new('1.1', '200', 'Yay!')
+      res.stub!(:body => {"error"=>{"error_message"=>"The discount code \"volunteer_foo\" is already in use.", "error_type"=>"Discount error"}}.to_json)
+      Net::HTTP.should_receive(:post_form).and_return(res)
+
+      ticket = Factory(:ticket)
+
+      ticket.register_code.should be_true
+      ticket.status.should == "registered_code"
+      ticket.report.should =~ /already exists/
+    end
+
     it "should fail if EventBrite responds with an API error" do
       Ticket.stub!(:disable_register_code => false)
       stub_eventbrite_secrets
