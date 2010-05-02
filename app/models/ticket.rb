@@ -59,8 +59,6 @@ class Ticket < ActiveRecord::Base
     self.register_code
     self.send_email
     return self.status
-  ensure
-    self.save
   end
 
   # Register the discount code with EventBrite.
