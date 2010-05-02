@@ -9,6 +9,7 @@ end
 Factory.define :ticket_kind do |f|
   f.sequence(:title) { |n| "ticket_kind_#{n}"}
   f.template "Template text here! Your code here: %CODE%."
+  f.subject "Your ticket!"
 end
 
 Factory.define :ticket do |f|
