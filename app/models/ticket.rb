@@ -36,6 +36,26 @@ class Ticket < ActiveRecord::Base
   aasm_event(:sent_email)              { transitions :to => :sent_email,              :from => :sending_email }
   aasm_event(:failed_to_send_email)    { transitions :to => :failed_to_send_email,    :from => :sending_email }
 
+  # Return human-readable label for status.
+  def status_label
+    label = self.status.to_s.gsub('created', 'working').gsub(/_/, ' ').capitalize
+    label << '...' unless self.done?
+    label << '!' if self.success? == false
+    return label
+  end
+
+  # Is the ticket processing done, be it success or failure?
+  def done?
+    return [:failed_to_register_code, :failed_to_send_email, :sent_email].include?(self.status.try(:to_sym))
+  end
+
+  # Was the ticket processed successfully? True if yes, false if failed, nil if not finished.
+  def success?
+    return self.done? ?
+      self.status.to_sym == :sent_email :
+      nil
+  end
+
   # Set this ticket's kind if needed and one's available in the batch.
   def set_ticket_kind
     if self.ticket_kind.nil? && self.batch && self.batch.ticket_kind

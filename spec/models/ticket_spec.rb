@@ -11,6 +11,58 @@ describe Ticket do
     end
   end
 
+  describe "status_label" do
+    it "should have a status label" do
+      Factory(:ticket).status_label.should_not be_blank
+    end
+
+    it "should be capitalized" do
+      ticket = Factory(:ticket)
+      
+      ticket.status_label.should == ticket.status_label.capitalize
+    end
+
+    it "should be able to emit spaces" do
+      Factory(:ticket, :status => :sending_email).status_label.should =~ /\s/
+    end
+
+    it "should put '...' at end of unfinished status" do
+      Factory(:ticket, :status => :sending_email).status_label.should =~ /\.\.\.$/
+    end
+
+    it "should put '!' at end of error" do
+      Factory(:ticket, :status => :failed_to_send_email).status_label.should =~ /!$/
+    end
+  end
+
+  describe "done?" do
+    it "should be true for successfully finished work" do
+      Factory(:ticket, :status => :sent_email).done?.should be_true
+    end
+
+    it "should be true for failed finished work" do
+      Factory(:ticket, :status => :failed_to_send_email).done?.should be_true
+    end
+    
+    it "should be false for unfinished work" do
+      Factory(:ticket, :status => :sending_email).done?.should be_false
+    end
+  end
+
+  describe "success?" do
+    it "should be true if successfully completed" do
+      Factory(:ticket, :status => :sent_email).success?.should be_true
+    end
+
+    it "should be false if ended in failure" do
+      Factory(:ticket, :status => :failed_to_send_email).success?.should be_false
+    end
+
+    it "should be nil if not done" do
+      Factory(:ticket, :status => :sending_email).success?.should be_nil
+    end
+  end
+
   describe "ticket_kind" do
     it "should assign ticket_kind from the assigned batch" do
       kind = Factory(:ticket_kind)
