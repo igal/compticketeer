@@ -23,6 +23,8 @@ class TicketKind < ActiveRecord::Base
   validates_length_of :prefix, :within => 1..20
   validates_presence_of :template
   validates_length_of :template, :minimum => 1
+  validates_presence_of :subject
+  validates_length_of :subject, :minimum => 1
 
   # Override title to automatically set prefix if needed.
   def title=(value)
