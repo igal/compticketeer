@@ -33,7 +33,7 @@ class Ticket < ActiveRecord::Base
   aasm_event(:registered_code)         { transitions :to => :registered_code,         :from => :registering_code }
   aasm_event(:failed_to_register_code) { transitions :to => :failed_to_register_code, :from => :registering_code }
   aasm_event(:sending_email)           { transitions :to => :sending_email,           :from => :registered_code }
-  aasm_event(:sent_email)              { transitions :to => :sent_email,              :from => :registered_code }
+  aasm_event(:sent_email)              { transitions :to => :sent_email,              :from => :sending_email }
   aasm_event(:failed_to_send_email)    { transitions :to => :failed_to_send_email,    :from => :sending_email }
 
   # Set this ticket's kind if needed and one's available in the batch.
@@ -59,6 +59,8 @@ class Ticket < ActiveRecord::Base
     self.register_code
     self.send_email
     return self.status
+  ensure
+    self.save
   end
 
   # Register the discount code with EventBrite.
