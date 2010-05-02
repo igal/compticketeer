@@ -8,7 +8,7 @@ end
 
 Factory.define :ticket_kind do |f|
   f.sequence(:title) { |n| "ticket_kind_#{n}"}
-  f.template "Template text here!"
+  f.template "Template text here! Your code here: %CODE%."
 end
 
 Factory.define :ticket do |f|
