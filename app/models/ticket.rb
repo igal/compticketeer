@@ -122,6 +122,9 @@ class Ticket < ActiveRecord::Base
 
   # Send email for this ticket.
   def send_email
-    puts "TODO implement" # TODO implement
+    # TODO implement
+    self.logger.warn("#{self.class.name}#send_email called for record ##{self.id}")
+    self.sending_email!
+    self.sent_email!
   end
 end
