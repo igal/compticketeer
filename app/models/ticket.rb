@@ -159,9 +159,20 @@ class Ticket < ActiveRecord::Base
 
   # Send email for this ticket.
   def send_email
-    # TODO implement
-    self.logger.warn("#{self.class.name}#send_email called for record ##{self.id}")
     self.sending_email!
-    self.sent_email!
+    begin
+      Notifier.deliver_ticket(self)
+    rescue Exception => e
+      # TODO catch specific exception?
+      self.update_attribute :report, "Could not send email: #{e.class.name}, #{e.message}"
+      self.failed_to_send_email!
+    else
+      self.sent_email!
+    end
+  end
+
+  # Return a filled-in template for email.
+  def fill_email_template
+    return self.ticket_kind.template.gsub(/%CODE%/i, self.discount_code)
   end
 end
