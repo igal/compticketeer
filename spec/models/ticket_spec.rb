@@ -145,7 +145,5 @@ describe Ticket do
       ticket.report.should =~ /.+secrets\.yml.+/
       ticket.status.should == "failed_to_register_code"
     end
-
-    # TODO test remaining paths
   end
 end
