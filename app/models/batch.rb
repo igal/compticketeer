@@ -1,3 +1,15 @@
+# == Schema Information
+# Schema version: 20100426102827
+#
+# Table name: batches
+#
+#  id             :integer         not null, primary key
+#  created_at     :datetime
+#  updated_at     :datetime
+#  emails         :text
+#  ticket_kind_id :integer
+#
+
 class Batch < ActiveRecord::Base
   has_many :tickets, :dependent => :destroy
   belongs_to :ticket_kind

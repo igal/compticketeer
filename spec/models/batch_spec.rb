@@ -1,3 +1,15 @@
+# == Schema Information
+# Schema version: 20100426102827
+#
+# Table name: batches
+#
+#  id             :integer         not null, primary key
+#  created_at     :datetime
+#  updated_at     :datetime
+#  emails         :text
+#  ticket_kind_id :integer
+#
+
 require 'spec_helper'
 
 describe Batch do

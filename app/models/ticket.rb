@@ -1,3 +1,20 @@
+# == Schema Information
+# Schema version: 20100426102827
+#
+# Table name: tickets
+#
+#  id             :integer         not null, primary key
+#  ticket_kind_id :integer
+#  batch_id       :integer
+#  email          :string(255)
+#  report         :text(2048)
+#  processed_at   :datetime
+#  created_at     :datetime
+#  updated_at     :datetime
+#  discount_code  :string(255)
+#  status         :string(255)
+#
+
 class Ticket < ActiveRecord::Base
   # Associations
   belongs_to :batch

@@ -1,3 +1,16 @@
+# == Schema Information
+# Schema version: 20100426102827
+#
+# Table name: ticket_kinds
+#
+#  id         :integer         not null, primary key
+#  title      :string(255)
+#  prefix     :string(255)
+#  template   :text
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 require 'spec_helper'
 
 describe TicketKind do
