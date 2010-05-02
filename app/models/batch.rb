@@ -10,6 +10,18 @@ class Batch < ActiveRecord::Base
   before_validation :create_tickets
   after_validation :validate_tickets
 
+  # Process all tickts.
+  def process
+    for ticket in tickets
+      ticket.process
+    end
+  end
+
+  # Process all tickets asynchronously.
+  def process_asynchronously
+    spawn { self.process }
+  end
+
   protected
 
   # Create the tickets associated with this batch.
