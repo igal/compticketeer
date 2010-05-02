@@ -116,6 +116,10 @@ describe Ticket do
   end
 
   describe "process" do
+      before do
+        stub_notifier_secrets
+      end
+
     it "should register code and send email" do
       ticket = Factory(:ticket)
       ticket.should_receive(:register_code)

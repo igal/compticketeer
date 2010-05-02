@@ -26,6 +26,10 @@ describe BatchesController do
     end
 
     describe "create" do
+      before do
+        stub_notifier_secrets
+      end
+
       it "should create batch when given valid params" do
         lambda do
           post :create, :batch => Factory.attributes_for(:batch, :ticket_kind => @ticket_kinds.first, :emails => "foo@bar.com\nbaz@qux.org")
