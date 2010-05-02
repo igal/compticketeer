@@ -26,21 +26,18 @@ describe BatchesController do
     end
 
     describe "create" do
-      it "should create batch" do
-        post :create, :batch => Factory.attributes_for(:batch, :ticket_kind => @ticket_kinds.first)
+      it "should create batch when given valid params" do
+        lambda do
+          post :create, :batch => Factory.attributes_for(:batch, :ticket_kind => @ticket_kinds.first, :emails => "foo@bar.com\nbaz@qux.org")
+        end.should change(Ticket, :count).by(2)
+
         response.should redirect_to(batch_path(assigns[:batch].id))
-        flash[:error].should be_blank
-      end
-
-      it "should create a batch when given valid params" do
-        batch = Factory :batch
-        Batch.should_receive(:new).with(batch.attributes).and_return(batch)
-        batch.should_receive(:save).and_return(true)
-
-        post :create, :batch => batch.attributes
-
-        response.should redirect_to(batch_path batch)
         assigns[:batch].should be_valid
+        flash[:error].should be_blank
+
+        assigns[:batch].tickets.each do |ticket|
+          ticket.status.should == "sent_email"
+        end
       end
 
       it "should not create a batch when given invalid params"  do
