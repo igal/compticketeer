@@ -12,7 +12,7 @@ Kind: <%= @batch.ticket_kind.title %>
   <tbody>
     <% for ticket in @batch.tickets %>
       <tr>
-        <td><%= ticket.status %></td>
+        <td><%= ticket.status_label %></td>
         <td><%= ticket.email %></td>
       </tr>
     <% end %>
