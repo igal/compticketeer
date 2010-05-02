@@ -21,8 +21,9 @@ describe "/tickets/edit.html.erb" do
       with_tag('input#ticket_ticket_kind_id[name=?]', "ticket[ticket_kind_id]")
       with_tag('input#ticket_batch_id[name=?]', "ticket[batch_id]")
       with_tag('input#ticket_email[name=?]', "ticket[email]")
-      with_tag('input#ticket_processed[name=?]', "ticket[processed]")
-      with_tag('input#ticket_error[name=?]', "ticket[error]")
+      with_tag('input#ticket_report[name=?]', "ticket[report]")
+      with_tag('input#ticket_discount_code[name=?]', "ticket[discount_code]")
+      with_tag('input#ticket_status[name=?]', "ticket[status]")
     end
   end
 end
