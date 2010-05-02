@@ -16,11 +16,7 @@ require 'spec_helper'
 
 describe TicketKind do
   before(:each) do
-    @valid_attributes = {
-      :title => "value for title",
-      :prefix => "value for prefix",
-      :template => "value for template"
-    }
+    @valid_attributes = Factory.attributes_for :ticket_kind
   end
 
   it "should create a new instance given valid attributes" do
