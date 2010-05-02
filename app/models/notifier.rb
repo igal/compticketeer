@@ -10,7 +10,7 @@ class Notifier < ActionMailer::Base
       raise ArgumentError, "Email settings for 'notifier' must be set in 'config/secrets.yml'"
     end
 
-    subject    'Notifier#ticket'
+    subject    ticket.ticket_kind.subject
     recipients ticket.email
     from       SECRETS.notifier['user_name']
     sent_on    sent_at
