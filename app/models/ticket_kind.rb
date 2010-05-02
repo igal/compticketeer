@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100426102827
+# Schema version: 20100502225937
 #
 # Table name: ticket_kinds
 #
@@ -9,6 +9,7 @@
 #  template   :text
 #  created_at :datetime
 #  updated_at :datetime
+#  subject    :string(255)
 #
 
 class TicketKind < ActiveRecord::Base
