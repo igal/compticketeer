@@ -26,15 +26,12 @@ class Batch < ActiveRecord::Base
 
   # Create the tickets associated with this batch.
   def create_tickets
-    # TODO Find better way to avoid creating same tickets again on each validation
-    @tickets_for_email ||= {}
     for email in self.emails.split(/\s+/).map(&:strip)
-      if @tickets_for_email[email]
-        @tickets_for_email[email].update_attributes(:ticket_kind => self.ticket_kind, :batch => self)
+      if ticket = self.tickets.detect {|ticket| ticket.email == email }
+        ticket.update_attributes(:ticket_kind => self.ticket_kind, :batch => self)
       else
         ticket = Ticket.new(:email => email, :ticket_kind => self.ticket_kind, :batch => self)
         self.tickets << ticket
-        @tickets_for_email[email] = ticket
       end
       Ticket.find_all_by_email(email).each do |prev_ticket|
         # TODO how to pass this message to controller/view
