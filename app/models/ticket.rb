@@ -33,7 +33,7 @@ class Ticket < ActiveRecord::Base
   aasm_event(:registered_code)         { transitions :to => :registered_code,         :from => :registering_code }
   aasm_event(:failed_to_register_code) { transitions :to => :failed_to_register_code, :from => :registering_code }
   aasm_event(:sending_email)           { transitions :to => :sending_email,           :from => :registered_code }
-  aasm_event(:sent_email)              { transitions :to => :sent_email,              :from => :registered_code }
+  aasm_event(:sent_email)              { transitions :to => :sent_email,              :from => :sending_email }
   aasm_event(:failed_to_send_email)    { transitions :to => :failed_to_send_email,    :from => :sending_email }
 
   # Set this ticket's kind if needed and one's available in the batch.
@@ -59,6 +59,8 @@ class Ticket < ActiveRecord::Base
     self.register_code
     self.send_email
     return self.status
+  ensure
+    self.save
   end
 
   # Register the discount code with EventBrite.
@@ -83,16 +85,26 @@ class Ticket < ActiveRecord::Base
         query[key] = SECRETS.eventbrite_data[key]
       end
 
+      # TODO refactor this to shorten the code, eliminate redundancy, etc
       res = Net::HTTP.post_form(URI.parse('http://www.eventbrite.com/json/discount_new'), query)
       case res
       when Net::HTTPOK
         begin
           answer = JSON.parse(res.body)
           if answer['error']
-            self.update_attribute :report, "Could not register EventBrite code: #{res.body}"
-            self.failed_to_register_code!
-            return false
+            if answer['error'].try(:[], 'error_message').to_s =~ /already in use/
+              # Ticket exists succeeded
+              self.update_attribute :report, "EventBrite code already exists: #{res.body}"
+              self.registered_code!
+              return true
+            else
+              # Has error of some other kind
+              self.update_attribute :report, "Could not register EventBrite code: #{res.body}"
+              self.failed_to_register_code!
+              return false
+            end
           else
+            # Registration succeeded
             self.update_attribute :report, "Registered EventBrite code: #{res.body}"
             self.registered_code!
             return true
@@ -112,6 +124,9 @@ class Ticket < ActiveRecord::Base
 
   # Send email for this ticket.
   def send_email
-    puts "TODO implement" # TODO implement
+    # TODO implement
+    self.logger.warn("#{self.class.name}#send_email called for record ##{self.id}")
+    self.sending_email!
+    self.sent_email!
   end
 end
