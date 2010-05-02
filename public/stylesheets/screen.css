@@ -54,3 +54,15 @@ a:hover { color: #fff; background-color:#000; }
   list-style: square;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table td {
+    border: 1px solid gray;
+    padding: 0.25em;
+}
