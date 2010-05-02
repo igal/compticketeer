@@ -77,7 +77,7 @@ describe Ticket do
       ticket.status.should == "registered_code"
     end
 
-    it "should update" do
+    it "should succeed if discount code already exists" do
       Ticket.stub!(:disable_register_code => false)
       stub_eventbrite_secrets
 
