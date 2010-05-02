@@ -10,7 +10,7 @@ class Batch < ActiveRecord::Base
   before_validation :create_tickets
   after_validation :validate_tickets
 
-  # Process all tickts.
+  # Process all tickets.
   def process
     for ticket in tickets
       ticket.process
