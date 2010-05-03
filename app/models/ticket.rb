@@ -1,3 +1,20 @@
+# == Schema Information
+# Schema version: 20100502225937
+#
+# Table name: tickets
+#
+#  id             :integer         not null, primary key
+#  ticket_kind_id :integer
+#  batch_id       :integer
+#  email          :string(255)
+#  report         :text(2048)
+#  processed_at   :datetime
+#  created_at     :datetime
+#  updated_at     :datetime
+#  discount_code  :string(255)
+#  status         :string(255)
+#
+
 class Ticket < ActiveRecord::Base
   # Associations
   belongs_to :batch
@@ -142,9 +159,20 @@ class Ticket < ActiveRecord::Base
 
   # Send email for this ticket.
   def send_email
-    # TODO implement
-    self.logger.warn("#{self.class.name}#send_email called for record ##{self.id}")
     self.sending_email!
-    self.sent_email!
+    begin
+      Notifier.deliver_ticket(self)
+    rescue Exception => e
+      # TODO catch specific exception?
+      self.update_attribute :report, "Could not send email: #{e.class.name}, #{e.message}"
+      self.failed_to_send_email!
+    else
+      self.sent_email!
+    end
+  end
+
+  # Return a filled-in template for email.
+  def fill_email_template
+    return self.ticket_kind.template.gsub(/%CODE%/i, self.discount_code)
   end
 end

@@ -1,3 +1,17 @@
+# == Schema Information
+# Schema version: 20100502225937
+#
+# Table name: ticket_kinds
+#
+#  id         :integer         not null, primary key
+#  title      :string(255)
+#  prefix     :string(255)
+#  template   :text
+#  created_at :datetime
+#  updated_at :datetime
+#  subject    :string(255)
+#
+
 class TicketKind < ActiveRecord::Base
   named_scope :ordered, :order => "lower(title) asc"
 
@@ -9,6 +23,8 @@ class TicketKind < ActiveRecord::Base
   validates_length_of :prefix, :within => 1..20
   validates_presence_of :template
   validates_length_of :template, :minimum => 1
+  validates_presence_of :subject
+  validates_length_of :subject, :minimum => 1
 
   # Override title to automatically set prefix if needed.
   def title=(value)

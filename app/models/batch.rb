@@ -1,3 +1,15 @@
+# == Schema Information
+# Schema version: 20100502225937
+#
+# Table name: batches
+#
+#  id             :integer         not null, primary key
+#  created_at     :datetime
+#  updated_at     :datetime
+#  emails         :text
+#  ticket_kind_id :integer
+#
+
 class Batch < ActiveRecord::Base
   has_many :tickets, :dependent => :destroy
   belongs_to :ticket_kind
@@ -20,6 +32,14 @@ class Batch < ActiveRecord::Base
   # Process all tickets asynchronously.
   def process_asynchronously
     spawn { self.process }
+  end
+
+  # Is processing on all the tickets done?
+  def done?
+    for ticket in self.tickets
+      return false unless ticket.done?
+    end
+    return true
   end
 
   protected
