@@ -13,6 +13,7 @@ config/theme.txt
 config/thin.yml
 config/secrets.yml
 coverage/*
+coverage.info
 db/*.sqlite3
 db/*.sqlite3.*
 db/schema.rb
