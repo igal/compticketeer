@@ -14,6 +14,12 @@ class ApplicationController < ActionController::Base
   # Filters
   before_filter :require_user
 
+  # Exception notification, setup in "config/initializers/exception_notification.rb"
+  if EXCEPTION_NOTIFICATION_ENABLED
+    include ExceptionNotifiable
+    local_addresses.clear
+  end
+
   protected
 
   #==[ Utilities ]==============================================================
