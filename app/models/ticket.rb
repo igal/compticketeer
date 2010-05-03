@@ -86,7 +86,10 @@ class Ticket < ActiveRecord::Base
       # Add a prefix to the ticket if possible
       s = self.ticket_kind ? (self.ticket_kind.prefix + '_') : ''
       # Generate a discount code based on the user's email
-      s << self.email.gsub(/\W/, '')
+      salted_email = "#{self.email} #{SECRETS.discount_code_salt}"
+      email_hash = Digest::MD5.hexdigest(salted_email)[0..6]
+      email_fragment = self.email.gsub(/\W/, '')
+      s << "#{email_fragment}_#{email_hash}"
       self.discount_code = s
     end
   end

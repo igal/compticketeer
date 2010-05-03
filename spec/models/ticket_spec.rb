@@ -99,7 +99,7 @@ describe Ticket do
     it "should be generated" do
       kind = Factory(:ticket_kind, :title => 'Speaker')
       batch = Factory(:batch, :ticket_kind => kind)
-      Factory(:ticket, :email => "foo@bar.com", :batch => batch).discount_code.should == "speaker_foobarcom"
+      Factory(:ticket, :email => "foo@bar.com", :batch => batch).discount_code.should =~ /^speaker_foobarcom/
     end
 
     it "should not be generated if already set" do
@@ -112,6 +112,15 @@ describe Ticket do
       ticket = Factory.build(:ticket, :email => nil)
       ticket.should_not_receive(:discount_code=)
       ticket.generate_discount_code
+    end
+
+    it "should generate the same discount code every time" do
+      ticket = Factory.build(:ticket)
+      ticket.discount_code = nil
+      code1 = ticket.generate_discount_code
+      ticket.discount_code = nil
+      code2 = ticket.generate_discount_code
+      code1.should == code2
     end
   end
 
