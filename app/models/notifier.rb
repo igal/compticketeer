@@ -12,7 +12,7 @@ class Notifier < ActionMailer::Base
 
     subject    ticket.ticket_kind.subject
     recipients ticket.email
-    from       SECRETS.notifier['user_name']
+    from       SECRETS.notifier['from'] || SECRETS.notifier['user_name']
     sent_on    sent_at
 
     body       :contents => ticket.fill_email_template

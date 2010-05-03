@@ -4,6 +4,7 @@ configuration = {}
 if SECRETS.notifier.kind_of?(Enumerable)
   for key, value in SECRETS.try(:notifier)
     key = key.to_sym
+    next if key == :from
     if key == :authentication
       value = value.to_sym
     end
