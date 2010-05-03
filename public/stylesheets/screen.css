@@ -66,3 +66,8 @@ table td {
     border: 1px solid gray;
     padding: 0.25em;
 }
+
+.label_note {
+    color: #666;
+    font-style: italic;
+}
