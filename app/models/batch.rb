@@ -34,6 +34,14 @@ class Batch < ActiveRecord::Base
     spawn { self.process }
   end
 
+  # Is processing on all the tickets done?
+  def done?
+    for ticket in self.tickets
+      return false unless ticket.done?
+    end
+    return true
+  end
+
   protected
 
   # Create the tickets associated with this batch.
