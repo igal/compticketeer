@@ -19,7 +19,14 @@ class BatchesController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @batch }
+      format.json do
+        render :json => @batch.to_json(
+          :methods => [:done?],
+          :include => {
+            :tickets => {:methods => [:status_label, :done?, :success?]}
+          }
+        )
+      end
     end
   end
 
