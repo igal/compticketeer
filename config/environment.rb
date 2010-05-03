@@ -10,6 +10,8 @@ Rails::Initializer.run do |config|
   # Specify gems that this application depends on and have them installed with rake gems:install
   config.gem 'aasm'
   config.gem 'authlogic'
+  config.gem 'super_exception_notifier', :version => '~> 2.0.0', :lib => "exception_notifier"
+
   if ['development', 'test'].include? RAILS_ENV
     config.gem 'factory_girl', :lib => false
     config.gem 'rspec-rails', :version => '~> 1.3.2', :lib => false unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec-rails'))
