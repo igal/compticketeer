@@ -12,7 +12,14 @@
     <%= f.text_field :prefix %>
   </p>
   <p>
-    <%= f.label :template %><br />
+    <%= f.label :subject, "Email's subject line" %><br />
+    <%= f.text_field :subject %>
+  </p>
+  <p>
+    <%= f.label :template, "Email's body" %><br />
+    <span class="label_note">
+      Enter <strong>%CODE%</strong> into the template where you want the discount code to appear:    <br />
+    </span>
     <%= f.text_area :template %>
   </p>
   <p>
