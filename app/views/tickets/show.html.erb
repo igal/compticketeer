@@ -7,7 +7,7 @@
 
 <p>
   <b>Ticket kind:</b>
-  <%=h @ticket.ticket_kind_id %>
+  <%=h @ticket.ticket_kind.title %>
 </p>
 
 <p>
@@ -21,20 +21,14 @@
 </p>
 
 <p>
-  <b>Processed:</b>
-  <%=h @ticket.processed %>
+  <b>Discount Code:</b>
+  <%=h @ticket.discount_code %>
 </p>
 
 <p>
-  <b>Error:</b>
-  <%=h @ticket.error %>
-</p>
-
-<p>
-  <b>Processed at:</b>
-  <%=h @ticket.processed_at %>
+  <b>Report:</b>
+  <%=h @ticket.report %>
 </p>
 
 
-<%= link_to 'Edit', edit_ticket_path(@ticket) %> |
 <%= link_to 'Back', tickets_path %>

@@ -20,14 +20,8 @@
     <td><%=h ticket.discount_code %></td>
     <td><%=h ticket.report %></td>
     <td class="nowrap">
-      <%= link_to 'Show', ticket %> |
-      <%= link_to 'Edit', edit_ticket_path(ticket) %> |
-      <%= link_to 'Destroy', ticket, :confirm => 'Are you sure?', :method => :delete %>
+      <%= link_to 'Show', ticket %>
     </td>
   </tr>
 <% end %>
 </table>
-
-<br />
-
-<%= link_to 'New ticket', new_ticket_path %>
