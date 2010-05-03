@@ -23,6 +23,7 @@ public/images/active_scaffold
 public/images/record_select
 public/javascripts/active_scaffold
 public/javascripts/all.js
+public/javascripts/cache/
 public/javascripts/record_select
 public/stylesheets/active_scaffold
 public/stylesheets/all.css
