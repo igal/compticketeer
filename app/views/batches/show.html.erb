@@ -2,7 +2,7 @@
 
 Kind: <%= @batch.ticket_kind.title %>
 
-<table>
+<table class="batch <%= @batch.done? ? 'batch_done' : '' %> " id="batch_<%= @batch.id %>">
   <thead>
     <tr>
       <th>Status</th>
@@ -12,7 +12,7 @@ Kind: <%= @batch.ticket_kind.title %>
   <tbody>
     <% for ticket in @batch.tickets %>
       <tr>
-        <td><%= ticket.status_label %></td>
+        <td id="ticket_status_for_<%= ticket.id %>"><%= ticket.status_label %></td>
         <td><%= ticket.email %></td>
       </tr>
     <% end %>
