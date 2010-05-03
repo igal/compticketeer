@@ -76,6 +76,49 @@ describe BatchesController do
         response.should be_success
         assigns[:batch] == batch
       end
+
+      describe "for JSON" do
+        before do
+          @batch = Factory :batch
+          @tickets = @batch.tickets
+          @ticket = @tickets.first
+          get :show, :id => @batch.id, :format => "json"
+          @data = response_json
+        end
+        
+        describe "for batch" do
+          it "should include attributes" do
+            @data['batch']['ticket_kind_id'].should == @batch.ticket_kind_id
+          end
+
+          it "should include selected methods" do
+            @data['batch']['done?'].should == @batch.done?
+          end
+          
+          it "should not include unselected methods" do
+            @data['batch']['ticket_kind'].should be_nil
+          end
+        end
+
+        describe "for tickets" do
+          before do
+             @ticket_data = @data['batch']['tickets'].first
+             @ticket = @batch.tickets.detect{ |ticket| ticket.id == @ticket_data['id'] }
+          end
+
+          it "should include attributes" do
+            @ticket_data['status'].should == @ticket.status
+          end
+
+          it "should include selected methods" do
+            @ticket_data['status_label'].should == @ticket.status_label
+          end
+
+          it "should not include unselected methods" do
+            @ticket_data['send_email'].should be_nil
+          end
+        end
+      end
     end
 
     describe "destroy" do
