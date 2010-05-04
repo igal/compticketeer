@@ -1,31 +1,6 @@
 <% page_title "Editing kind of ticket" %>
 
-<% form_for(@ticket_kind) do |f| %>
-  <%= f.error_messages %>
-
-  <p>
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </p>
-  <p>
-    <%= f.label :prefix %><br />
-    <%= f.text_field :prefix %>
-  </p>
-  <p>
-    <%= f.label :subject, "Email's subject line" %><br />
-    <%= f.text_field :subject %>
-  </p>
-  <p>
-    <%= f.label :template, "Email's body" %><br />
-    <span class="label_note">
-      Enter <strong>%CODE%</strong> into the template where you want the discount code to appear:    <br />
-    </span>
-    <%= f.text_area :template %>
-  </p>
-  <p>
-    <%= f.submit 'Update' %>
-  </p>
-<% end %>
+<%= render "form" %>
 
 <%= link_to 'Show', @ticket_kind %> |
 <%= link_to 'Back', ticket_kinds_path %>

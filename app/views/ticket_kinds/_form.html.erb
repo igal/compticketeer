@@ -1,0 +1,26 @@
+<% form_for(@ticket_kind) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :title, "Title of this kind of ticket" %><br />
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :prefix, "Prefix to add to discount code" %><br />
+    <%= f.text_field :prefix %>
+  </p>
+  <p>
+    <%= f.label :subject, "Email's subject line" %><br />
+    <%= f.text_field :subject %>
+  </p>
+  <p>
+    <%= f.label :template, "Email's body" %><br />
+    <span class="label_note">
+      Enter <strong>%CODE%</strong> into the template where you want the discount code to appear:    <br />
+    </span>
+    <%= f.text_area :template %>
+  </p>
+  <p>
+    <%= f.submit @ticket_kind.new_record? ? 'Create' : 'Update' %>
+  </p>
+<% end %>

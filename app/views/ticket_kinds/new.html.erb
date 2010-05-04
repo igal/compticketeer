@@ -1,23 +1,5 @@
 <% page_title "New kind of ticket" %>
 
-<% form_for(@ticket_kind) do |f| %>
-  <%= f.error_messages %>
-
-  <p>
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </p>
-  <p>
-    <%= f.label :prefix %><br />
-    <%= f.text_field :prefix %>
-  </p>
-  <p>
-    <%= f.label :template %><br />
-    <%= f.text_area :template %>
-  </p>
-  <p>
-    <%= f.submit 'Create' %>
-  </p>
-<% end %>
+<%= render "form" %>
 
 <%= link_to 'Back', ticket_kinds_path %>
