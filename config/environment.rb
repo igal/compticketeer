@@ -11,6 +11,7 @@ Rails::Initializer.run do |config|
   config.gem 'aasm'
   config.gem 'authlogic'
   config.gem 'super_exception_notifier', :version => '~> 2.0.0', :lib => "exception_notifier"
+  config.gem 'json'
 
   if ['development', 'test'].include? RAILS_ENV
     config.gem 'factory_girl', :lib => false
