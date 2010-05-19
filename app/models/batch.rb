@@ -55,7 +55,7 @@ class Batch < ActiveRecord::Base
       end
       Ticket.find_all_by_email(email).each do |prev_ticket|
         # TODO how to pass this message to controller/view
-        logger.warn "Warning: This email already has a #{prev_ticket.ticket_kind.title.upcase} ticket code, emailed status = #{prev_ticket.status.to_s.upcase}"
+        logger.warn "Warning: This email [#{email}] already has a #{prev_ticket.ticket_kind.title.upcase} ticket code, emailed status = #{prev_ticket.status.to_s.upcase}"
       end
     end
   end
