@@ -31,4 +31,4 @@ config.action_mailer.raise_delivery_errors = true
 # config.active_record.schema_format = :sql
 
 # Run Spawn blocks synchronously in tests.
-Spawn::method :yield
+Spawn::default_options(:method => :yield)
