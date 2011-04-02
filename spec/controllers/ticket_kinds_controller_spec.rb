@@ -86,11 +86,11 @@ describe TicketKindsController do
     end
 
     it "should fail with invalid attributes" do
-      record = Factory.stub(:ticket_kind, :title => nil, :id => 123)
-      TicketKind.should_receive(:find).with(record.id.to_s).and_return(record)
-      put :update, :id => record.id.to_s, :ticket_kind => record.attributes
+      create_record
+      put :update, :id => @record.id, :ticket_kind => { :title => nil }
       response.should be_success
-      assigns[:ticket_kind].should == record
+      assigns[:ticket_kind].should == @record
+      assigns[:ticket_kind].errors.full_messages.first.should =~ /title can't be blank/i
     end
   end
 
