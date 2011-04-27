@@ -14,8 +14,8 @@ Rails::Initializer.run do |config|
   config.gem 'json', :version => '1.5.1'
 
   if ['development', 'test'].include? RAILS_ENV
-    config.gem 'factory_girl', :version => '1.3.3',  :lib => false
-    config.gem 'rspec-rails', :version => '1.3.3', :lib => false unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec-rails'))
+    config.gem 'factory_girl', :version => '1.3.3', :lib => false
+    config.gem 'rspec-rails',  :version => '1.3.3', :lib => false
   end
 
   # Libraries
