@@ -10,7 +10,7 @@ Rails::Initializer.run do |config|
   # Specify gems that this application depends on and have them installed with rake gems:install
   config.gem 'aasm', :version => '2.2.0'
   config.gem 'authlogic', :version => '2.1.6'
-  config.gem 'super_exception_notifier', :version => '3.0.13', :lib => "exception_notification"
+  config.gem 'super_exception_notifier', :version => '~> 2.0.8', :lib => 'exception_notifier'
   config.gem 'json', :version => '1.5.1'
 
   if ['development', 'test'].include? RAILS_ENV
