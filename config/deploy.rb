@@ -1,3 +1,14 @@
+#===[ Setup ]===========================================================
+
+begin
+  require 'bundler/capistrano'
+rescue LoadError
+  puts <<-HERE
+    ERROR: You must install `bundler` on this computer to do deployments, e.g.:
+    % sudo gem install bundler
+  HERE
+end
+
 #===[ General settings ]================================================
 
 set :application, "compticketeer"
